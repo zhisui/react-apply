@@ -1,7 +1,10 @@
 const path = require('path');
 
 module.exports = {
-  // ...其他配置
+  entry: './'
+  output: {
+    path: path.resolve(__dirname, 'dist')
+  },
   devServer: {
     port: 8888, // 指定端口号
   },
