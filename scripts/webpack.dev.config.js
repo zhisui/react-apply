@@ -4,6 +4,7 @@ const isDevMod = process.env.NODE_ENV === 'development'
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
@@ -23,11 +24,20 @@ module.exports = {
             '@': path.resolve(__dirname, '../src'),
         },
         // 配置 extensions 来告诉 webpack 在没有书写后缀时，以什么样的顺序去寻找文件
-        extensions: ['.js', '.json', '.ts', '.tsx'],
+        extensions: ['.js', '.json', '.ts', '.tsx','.scss'],
     },
     optimization: {
+        minimize: true,
         minimizer: [
-
+            new TerserWebpackPlugin({
+                parallel: true, //开启多进程并行压缩
+                terserOptions: {
+                    output: {
+                        comments: false, //去除注释
+                    },
+                },
+                extractComments: false, // 不提取注释到单独的文件
+            }),
         ],
     },
 
@@ -37,11 +47,13 @@ module.exports = {
             //将打包后的资源注入到index.html文件内
             template: path.resolve(__dirname, '../public/index.html'), // 使用自定义模板
         }),
-        new MiniCssExtractPlugin({ //将css输出到单独的文件
+        new MiniCssExtractPlugin({
+            //将css输出到单独的文件
             filename: isDevMod ? 'css/style.css' : 'css/style.[contenthash].css',
             chunkFilename: isDevMod ? 'css/style.[id].css' : 'css/style.[contenthash].[id].css',
         }),
-        new CssMinimizerPlugin({ //压缩减少css文件内容
+        new CssMinimizerPlugin({
+            //压缩减少css文件内容
             minimizerOptions: {
                 preset: [
                     'default',
@@ -76,15 +88,6 @@ module.exports = {
                     },
                 },
             },
-            // {
-            //     test: /\.css$/,
-            //     exclude: /node_modules/,
-            //     use: [
-            //         {
-            //             loader: CssMinimizerPlugin.loader,
-            //         },
-            //     ],
-            // },
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
@@ -110,6 +113,29 @@ module.exports = {
                     },
                 ],
             },
+            // {
+            //     test: /\.(png|jpe?g|gif|svg|webp)$/i,
+            //     type: 'asset',
+            //     parser: {
+            //         dataUrlCondition: {
+            //             maxSize: 25 * 1024, // 25kb
+            //         },
+            //     },
+            //     generator: {
+            //         filename: 'assets/image/[name].[hash:8][ext]',
+            //     },
+            // },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                exclude: /node_modules/,
+                include: [path.resolve(__dirname,'../src/assets/image')],
+                loader: 'url-loader',
+                options: {
+                  limit: 8192,
+                  name: '[name].[hash:4].[ext]',
+                  outputPath: '/image'
+                }
+              },
         ],
     },
 }
