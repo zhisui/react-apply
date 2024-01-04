@@ -11,6 +11,7 @@ module.exports = {
     mode: 'development',
     devServer: {
         port: 8888,
+        open: true,
     },
     entry: path.resolve(__dirname, '../src/index.tsx'),
     output: {

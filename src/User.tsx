@@ -1,11 +1,15 @@
-import React, { useMemo } from 'react'
+import React, { useId, useMemo } from 'react'
 import { useEffect, useState } from 'react'
 
 interface UserType {
     id?: number
     name?: string
 }
+
 export function User() {
+    const id1 = useId()
+    const id = useId()
+
     const [users, setUsers] = useState<UserType[]>([
         { id: 1, name: 'Kyle' },
         { id: 2, name: 'Jonm' },
@@ -40,6 +44,14 @@ export function User() {
         <>
             <div>1: {JSON.stringify(selectedUser)}</div>
             <div>2: {JSON.stringify(users)}</div>
+            <div>
+                <label htmlFor={`${id1}-email`}>Email</label>
+                <input id={`${id1}-email`} />
+            </div>
+            <div>
+            <label htmlFor={`${id}-password`}>Password</label>
+            <input id={`${id}-password`} />
+            </div>
         </>
     )
 }

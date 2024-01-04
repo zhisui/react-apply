@@ -1,0 +1,17 @@
+.container{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 16px;
+    background-color: #444;
+    color:#fff;
+    border-radius: 6px;
+
+    .close {
+        position: absolute;
+        top:0;
+        right: 0;
+        color:#000;
+    }
+}
